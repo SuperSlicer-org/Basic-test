@@ -33,13 +33,13 @@ jobs:
       - name: get profile id
         id: profile_id
         run: grep id description.ini >> $GITHUB_OUTPUT
-      - name: show profile id
-        run: echo profile id = ;${{ steps.profile_id.outputs.id }};
+  #    - name: show profile id
+   #     run: echo profile id = ;${{ steps.profile_id.outputs.id }};
       - name: get slicer version1
         id: slicer_version1
         run: echo "id = Basic" >> $GITHUB_OUTPUT
       - name: show slicer version1
-        run: echo slicer version = -${{ steps.slicer_version1.outputs.slicer_version }}-
+        run: echo slicer version = -${{ steps.slicer_version1.outputs.id }}-
       - name: get slicer version
         id: slicer_version
         run: grep config_version profiles/${{ steps.profile_id.outputs.id }}.ini >> $GITHUB_OUTPUT
