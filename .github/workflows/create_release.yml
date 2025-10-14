@@ -60,6 +60,25 @@ jobs:
         if: ${{ format('{0}:{1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str) == steps.get-latest-tag.outputs.tag }}
         run: |
           echo "Error: the version already exists"
+      - uses: mukunku/tag-exists-action@v1.6.0
+        id: check-tag
+        with: 
+          tag: '1.0.5=2.7.61.10'
+      - uses: mukunku/tag-exists-action@v1.6.0
+        id: check-tag2
+        with: 
+          tag: ${{ format('{0}:{1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}
+      - name: echo
+        if:  == steps.get-latest-tag.outputs.tag }}
+        run: |
+          echo "'${{steps.current_version.outputs.str}}'"
+          echo "'${{steps.get-latest-tag.outputs.tag}}'"
+          echo "'${{ format('{0}:{1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}'"
+          echo "'${{steps.check-tag2.outputs.exists}}'"
+      - name: test version v3
+        if: ${{not steps.check-tag2.outputs.exists}}
+        run: |
+          echo "Error: the version already exists"
       - name: Create tag
         run: echo "TODO:create tag"
 #      - name: Create tag
