@@ -32,27 +32,27 @@ jobs:
         run: echo "Last tag = '${{ steps.get-latest-tag.outputs.tag }}'"
       - name: get profile id
         id: profile_id
-        run: grep id description.ini >> $GITHUB_OUTPUT
-  #    - name: show profile id
-   #     run: echo profile id = ;${{ steps.profile_id.outputs.id }};
+        run: echo "id=$(sed -n 's#id = ##p' description.ini)" >> $GITHUB_OUTPUT
+      - name: show profile id
+        run: echo profile id = ;${{ steps.profile_id.outputs.id }};
       - name: get slicer version1
         id: slicer_version1
-        run: echo "id = Basic" >> $GITHUB_OUTPUT
+        run: echo "id=Basic" >> $GITHUB_OUTPUT
       - name: show slicer version1
         run: echo slicer version = -${{ steps.slicer_version1.outputs.id }}-
       - name: get slicer version
         id: slicer_version
-        run: grep config_version profiles/${{ steps.profile_id.outputs.id }}.ini >> $GITHUB_OUTPUT
+        run: echo "str=$(sed -n 's#slicer_version = ##p' profiles/${{ steps.profile_id.outputs.id }}.ini)" >> $GITHUB_OUTPUT
       - name: show slicer version
-        run: echo slicer version = -${{ steps.slicer_version.outputs.slicer_version }}-
+        run: echo slicer version = -${{ steps.slicer_version.outputs.str }}-
       - name: get profile version
         id: profile_version
-        run: grep config_version profiles/${{ steps.profile_id.outputs.id }}.ini >> $GITHUB_OUTPUT
+        run: echo "str=$(sed -n 's#config_version = ##p' profiles/${{ steps.profile_id.outputs.id }}.ini)" >> $GITHUB_OUTPUT
       - name: show profile version
-        run: echo profile version = -${{ steps.profile_version.outputs.config_version }}-
+        run: echo profile version = -${{ steps.profile_version.outputs.str }}-
       - name: recreate current versions string
         id: current_version
-        run: echo "str=${{ steps.slicer_version.outputs.slicer_version }}:${{ steps.profile_version.outputs.config_version }}" >> $GITHUB_OUTPUT
+        run: echo "str=${{ steps.slicer_version.outputs.str }}:${{ steps.profile_version.outputs.str }}" >> $GITHUB_OUTPUT
       - name: test version
         if: ${{ steps.current_version.outputs.str == steps.get-latest-tag.outputs.tag }}
         run: |
