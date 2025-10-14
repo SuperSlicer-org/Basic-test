@@ -51,12 +51,15 @@ jobs:
       - name: recreate current versions string
         id: current_version
         run: |
-          echo "str=${{ steps.slicer_version.outputs.str }}:${{ steps.profile_version.outputs.str }}" >> $GITHUB_OUTPUT
+          echo "str=${{ steps.profile_version.outputs.str }}:${{ steps.slicer_version.outputs.str }}" >> $GITHUB_OUTPUT
       - name: test version
         if: ${{ steps.current_version.outputs.str == steps.get-latest-tag.outputs.tag }}
         run: |
           echo "Error: the version already exists"
-          exit 1
+      - name: test version v2
+        if: ${{ steps.profile_version.outputs.str + ':' + steps.slicer_version.outputs.str == steps.get-latest-tag.outputs.tag }}
+        run: |
+          echo "Error: the version already exists"
       - name: Create tag
         run: echo "TODO:create tag"
 #      - name: Create tag
