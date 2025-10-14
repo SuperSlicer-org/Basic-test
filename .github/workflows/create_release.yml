@@ -57,7 +57,7 @@ jobs:
         run: |
           echo "Error: the version already exists"
       - name: test version v2
-        if: ${{ format('{0}:{1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str) == steps.get-latest-tag.outputs.tag }}
+        if: ${{ format('{0}={1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str) == steps.get-latest-tag.outputs.tag }}
         run: |
           echo "Error: the version already exists"
       - uses: mukunku/tag-exists-action@v1.6.0
@@ -67,12 +67,12 @@ jobs:
       - uses: mukunku/tag-exists-action@v1.6.0
         id: check-tag2
         with: 
-          tag: ${{ format('{0}:{1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}
+          tag: ${{ format('{0}={1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}
       - name: echo
         run: |
           echo "'${{steps.current_version.outputs.str}}'"
           echo "'${{steps.get-latest-tag.outputs.tag}}'"
-          echo "'${{ format('{0}:{1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}'"
+          echo "'${{ format('{0}={1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}'"
           echo "'${{steps.check-tag2.outputs.exists}}'"
       - name: test version v3
         if: ${{steps.check-tag2.outputs.exists == 'true'}}
