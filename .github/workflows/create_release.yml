@@ -76,7 +76,7 @@ jobs:
           echo "'${{ format('{0}:{1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}'"
           echo "'${{steps.check-tag2.outputs.exists}}'"
       - name: test version v3
-        if: ${{not steps.check-tag2.outputs.exists}}
+        if: ${{steps.check-tag2.outputs.exists == 'true'}}
         run: |
           echo "Error: the version already exists"
       - name: Create tag
