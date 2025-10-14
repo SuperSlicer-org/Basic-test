@@ -49,9 +49,11 @@ jobs:
         id: current_version
         run: echo "str=${{ steps.slicer_version.outputs.slicer_version }}:${{ steps.profile_version.outputs.config_version }}" >> $GITHUB_OUTPUT
       - name: test version
-        if: steps.current_version.outputs.str == steps.get-latest-tag.outputs.tag
+        if: ${{ steps.current_version.outputs.str == steps.get-latest-tag.outputs.tag }}
         run: |
           echo "Error: the version already exists"
+          exit 1
+      
       - name: Create tag
         run: echo "TODO:create tag"
 #      - name: Create tag
