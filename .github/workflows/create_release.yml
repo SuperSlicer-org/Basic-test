@@ -69,7 +69,6 @@ jobs:
         with: 
           tag: ${{ format('{0}:{1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}
       - name: echo
-        if:  == steps.get-latest-tag.outputs.tag }}
         run: |
           echo "'${{steps.current_version.outputs.str}}'"
           echo "'${{steps.get-latest-tag.outputs.tag}}'"
