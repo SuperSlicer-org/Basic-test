@@ -56,14 +56,8 @@ jobs:
         run: |
           echo "Error: the version already exists"
           exit 1
-      - name: Create tag
-        uses: actions/github-script@v5
+      - uses: rickstaa/action-create-tag@v1
+        id: "tag_create"
         with:
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/${{ format('{0}={1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}',
-              sha: context.sha
-            })
+          tag: ${{ format('{0}={1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}
 
