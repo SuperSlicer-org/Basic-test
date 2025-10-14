@@ -25,11 +25,6 @@ jobs:
 
       - name: Run a one-line script
         run: echo Hello, world!
-      - uses: actions-ecosystem/action-get-latest-tag@v1
-        id: get-latest-tag
-        # ${{ steps.get-latest-tag.outputs.tag }}
-      - name: show last tag
-        run: echo "Last tag = '${{ steps.get-latest-tag.outputs.tag }}'"
       - name: get profile id
         id: profile_id
         run: |
@@ -48,18 +43,6 @@ jobs:
           echo "str=$(sed -n 's#config_version = ##p' profiles/${{ steps.profile_id.outputs.id }}.ini)" >> $GITHUB_OUTPUT
       - name: show profile version
         run: echo "profile version = ${{ steps.profile_version.outputs.str }}"
-      - name: recreate current versions string
-        id: current_version
-        run: |
-          echo "str=${{ steps.profile_version.outputs.str }}:${{ steps.slicer_version.outputs.str }}" >> $GITHUB_OUTPUT
-      - name: test version
-        if: ${{ steps.current_version.outputs.str == steps.get-latest-tag.outputs.tag }}
-        run: |
-          echo "Error: the version already exists"
-      - name: test version v2
-        if: ${{ format('{0}={1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str) == steps.get-latest-tag.outputs.tag }}
-        run: |
-          echo "Error: the version already exists"
       - uses: mukunku/tag-exists-action@v1.6.0
         id: check-tag
         with: 
@@ -68,26 +51,19 @@ jobs:
         id: check-tag2
         with: 
           tag: ${{ format('{0}={1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}
-      - name: echo
-        run: |
-          echo "'${{steps.current_version.outputs.str}}'"
-          echo "'${{steps.get-latest-tag.outputs.tag}}'"
-          echo "'${{ format('{0}={1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}'"
-          echo "'${{steps.check-tag2.outputs.exists}}'"
       - name: test version v3
         if: ${{steps.check-tag2.outputs.exists == 'true'}}
         run: |
           echo "Error: the version already exists"
+          exit 1
       - name: Create tag
-        run: echo "TODO:create tag"
-#      - name: Create tag
-#        uses: actions/github-script@v5
- #       with:
-#          script: |
-#            github.rest.git.createRef({
-#              owner: context.repo.owner,
-#              repo: context.repo.repo,
- #             ref: 'refs/tags/<tagname>',
- #             sha: context.sha
- #           })
-#
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ format('{0}={1}', steps.profile_version.outputs.str, steps.slicer_version.outputs.str)}}',
+              sha: context.sha
+            })
+
